@@ -22,4 +22,5 @@
     <string name="div1">÷</string>
     <string name="percent">%</string>
     <string name="parenthesis">( )</string>
+    <string name="subtraction">-</string>
 </resources>

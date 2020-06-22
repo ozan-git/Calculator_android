@@ -9,14 +9,11 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final char ADDITION = '+';
-    private final char SUBTRACTION = '-';
-    private final char MULTIPLICATION = '×';
-    private final char DIVISION = '÷';
-    private final char EQUAL = 0;
-    private double val1 = Double.NaN;
-    private double val2;
-    private char OPERATION;
+    private boolean isOpPressed = false;
+    private double val1 = 0;
+    private double val2 = 0;
+    private char currentOP;
+    private int val2Index = 0;
 
     Button button0;
     Button button1;
@@ -43,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView TextViewInputNumbers;
     TextView TextViewResultNumbers;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,49 +140,100 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.addition:
-                calculator();
-                OPERATION = ADDITION;
+                String screenContent = TextViewInputNumbers.getText().toString();
+                val2Index = TextViewInputNumbers.length() + 1;
+                val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("+");
-                TextViewResultNumbers.setText(String.valueOf(val1));
+                isOpPressed = true;
+                currentOP = '+';
+
 
                 break;
+
             case R.id.subtraction:
-                calculator();
-                OPERATION = SUBTRACTION;
-
+                screenContent = TextViewInputNumbers.getText().toString();
+                val2Index = TextViewInputNumbers.length() + 1;
+                val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("-");
-                TextViewResultNumbers.setText(String.valueOf(val1));
+                isOpPressed = true;
+                currentOP =  '-';
                 break;
+
             case R.id.mul:
-                calculator();
-                OPERATION = MULTIPLICATION;
-                TextViewResultNumbers.setText(String.valueOf(val1));
+                screenContent = TextViewInputNumbers.getText().toString();
+                val2Index = TextViewInputNumbers.length() + 1;
+                val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("×");
+                isOpPressed = true;
+                currentOP =  '×';
                 break;
+
             case R.id.division:
-                calculator();
-                OPERATION = DIVISION;
-                TextViewResultNumbers.setText(String.valueOf(val1));
+                screenContent = TextViewInputNumbers.getText().toString();
+                val2Index = TextViewInputNumbers.length() + 1;
+                val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("÷");
+                isOpPressed = true;
+                currentOP =  '÷';
                 break;
 
             case R.id.equals:
-                TextViewResultNumbers.append(String.valueOf(val1));
+                if (isOpPressed) {
+                    if (currentOP == '+') {
+                        screenContent = TextViewInputNumbers.getText().toString();
+                        String val2String = screenContent.substring(val2Index, screenContent.length());
+                        double val2 = Double.parseDouble(val2String);
+                        val2 += val1;
+                        TextViewInputNumbers.setText(String.valueOf(val2));
+
+                    }
+                    else if (currentOP == '-') {
+                        screenContent = TextViewInputNumbers.getText().toString();
+                        String val2String = screenContent.substring(val2Index, screenContent.length());
+                        double val2 = Double.parseDouble(val2String);
+                        val1 -= val2;
+
+                        TextViewInputNumbers.setText(String.valueOf(val1));
+                    }
+                    else if (currentOP == '×') {
+                        screenContent = TextViewInputNumbers.getText().toString();
+                        String val2String = screenContent.substring(val2Index, screenContent.length());
+                        double val2 = Double.parseDouble(val2String);
+                        val1 = val1*val2;
+                        TextViewInputNumbers.setText(String.valueOf(val1));
+                    }
+                    else if (currentOP == '÷') {
+                        screenContent = TextViewInputNumbers.getText().toString();
+                        String val2String = screenContent.substring(val2Index, screenContent.length());
+                        double val2 = Double.parseDouble(val2String);
+                        val1 =  val1/val2;
+                        TextViewInputNumbers.setText(String.valueOf(val1));
+                    }
+                }
                 break;
+
             case R.id.dot:
+                TextViewInputNumbers.append(".");
+
                 break;
 
             case R.id.percent:
+                TextViewInputNumbers.append("%");
                 break;
+
             case R.id.parenthesis:
+              /*  if ()
+                    TextViewInputNumbers.append("(");
+                else
+                    TextViewInputNumbers.append(")");
+/*/
                 break;
 
             case R.id.clean:
-                TextViewInputNumbers.setText(null);
-                TextViewResultNumbers.setText(null);
-
-
+                TextViewInputNumbers.setText("");
+                TextViewResultNumbers.setText("");
                 break;
+
             case R.id.del:
                 String displayedElements = TextViewInputNumbers.getText().toString();
                 int length = displayedElements.length();
@@ -198,81 +245,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void calculator() {
-        if (!Double.isNaN(val1)) {
-            val2 = Double.parseDouble(TextViewInputNumbers.getText().toString());
-
-            switch (OPERATION) {
-                case ADDITION:
-                    val1 = val1 + val2;
-                    break;
-                case SUBTRACTION:
-                    val1 = val1 - val2;
-                    break;
-                case MULTIPLICATION:
-                    val1 = val1 * val2;
-                    break;
-                case DIVISION:
-                    val1 = val1 / val2;
-                    break;
-            }
-        } else
-            val1 = Double.parseDouble(TextViewInputNumbers.getText().toString());
-    }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-        Clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CalScreen.setText("");
-            }
-        });
-
-
-
-
-
-
-* */
