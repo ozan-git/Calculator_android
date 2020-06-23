@@ -8,7 +8,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private int openParenthesis = 0;
 
+    private boolean isOpen = false;
+    private boolean dotUsed = false;
+    private final static int IS_NUMBER = 0;
+    private final static int IS_OPERAND = 1;
+    private final static int IS_OPEN_PARENTHESIS = 2;
+    private final static int IS_CLOSE_PARENTHESIS = 3;
+    private final static int IS_DOT = 4;
     private boolean isOpPressed = false;
     private double val1 = 0;
     private double val2 = 0;
@@ -147,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isOpPressed = true;
                 currentOP = '+';
 
-
                 break;
 
             case R.id.subtraction:
@@ -156,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("-");
                 isOpPressed = true;
-                currentOP =  '-';
+                currentOP = '-';
                 break;
 
             case R.id.mul:
@@ -165,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("×");
                 isOpPressed = true;
-                currentOP =  '×';
+                currentOP = '×';
                 break;
 
             case R.id.division:
@@ -174,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 val1 = Double.parseDouble(screenContent);
                 TextViewInputNumbers.append("÷");
                 isOpPressed = true;
-                currentOP =  '÷';
+                currentOP = '÷';
                 break;
 
             case R.id.equals:
@@ -186,34 +193,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         val2 += val1;
                         TextViewInputNumbers.setText(String.valueOf(val2));
 
-                    }
-                    else if (currentOP == '-') {
+                    } else if (currentOP == '-') {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
                         double val2 = Double.parseDouble(val2String);
                         val1 -= val2;
 
                         TextViewInputNumbers.setText(String.valueOf(val1));
-                    }
-                    else if (currentOP == '×') {
+                    } else if (currentOP == '×' ) {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
                         double val2 = Double.parseDouble(val2String);
-                        val1 = val1*val2;
+                        val1 = val1 * val2;
                         TextViewInputNumbers.setText(String.valueOf(val1));
-                    }
-                    else if (currentOP == '÷') {
+                    } else if (currentOP == '÷') {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
                         double val2 = Double.parseDouble(val2String);
-                        val1 =  val1/val2;
+                        val1 = val1 / val2;
                         TextViewInputNumbers.setText(String.valueOf(val1));
                     }
                 }
                 break;
 
             case R.id.dot:
-                TextViewInputNumbers.append(".");
+                if (TextViewInputNumbers.getText().length() == 0) {
+                    TextViewInputNumbers.append("0.");
+                    dotUsed = true;
+                } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_OPERAND) {
+                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "0.");
+                    dotUsed = true;
+                } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER) {
+                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ".");
+                    dotUsed = true;
+                } else if (dotUsed == true) {
+                }
 
                 break;
 
@@ -222,11 +236,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.parenthesis:
-              /*  if ()
-                    TextViewInputNumbers.append("(");
-                else
-                    TextViewInputNumbers.append(")");
-/*/
+                int lengthOfText = TextViewInputNumbers.getText().length();
+
+                if (lengthOfText == 0) {
+                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
+                    openParenthesis++;
+
+                } else if (openParenthesis > 0 && lengthOfText > 0) {
+                    String lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                    switch (defineLastCharacter(lastInput)){
+                        case IS_NUMBER:
+                        case IS_CLOSE_PARENTHESIS:
+                            TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ")");
+                            openParenthesis--;
+                            break;
+                        case IS_OPERAND:
+                        case IS_OPEN_PARENTHESIS:
+                            TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
+                            openParenthesis++;
+                            break;
+                    }
+                }else if (openParenthesis == 0 && lengthOfText >0){
+                    String lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                    if (defineLastCharacter(lastInput) == IS_OPERAND) {
+                        TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
+                    }else {
+                        screenContent = TextViewInputNumbers.getText().toString();
+                        val2Index = TextViewInputNumbers.length() + 1;
+                        val1 = Double.parseDouble(screenContent);
+                        isOpPressed = true;
+                        currentOP = '×';
+                        TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "×(");
+                    }
+                openParenthesis++;
+                }
+
                 break;
 
             case R.id.clean:
@@ -245,5 +289,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private int defineLastCharacter(String lastCharacter) {
+        try {
+            Integer.parseInt(lastCharacter);
+            return IS_NUMBER;
+        } catch (NumberFormatException e) {
+        }
 
+        if ((lastCharacter.equals("+") || lastCharacter.equals("-") || lastCharacter.equals("×") || lastCharacter.equals("÷") || lastCharacter.equals("%")))
+            return IS_OPERAND;
+
+        if (lastCharacter.equals("("))
+            return IS_OPEN_PARENTHESIS;
+
+        if (lastCharacter.equals(")"))
+            return IS_CLOSE_PARENTHESIS;
+
+        if (lastCharacter.equals("."))
+            return IS_DOT;
+
+        return -1;
+    }
 }
