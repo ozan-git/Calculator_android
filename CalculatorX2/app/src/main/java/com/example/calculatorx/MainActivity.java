@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private int openParenthesis = 0;
-
     private boolean isOpen = false;
+    private int lengthOfText;
+    private String lastInput;
+    private String screenContent;
     private boolean dotUsed = false;
     private final static int IS_NUMBER = 0;
     private final static int IS_OPERAND = 1;
@@ -148,44 +150,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.addition:
-                String screenContent = TextViewInputNumbers.getText().toString();
-                val2Index = TextViewInputNumbers.length() + 1;
-                val1 = Double.parseDouble(screenContent);
-                TextViewInputNumbers.append("+");
-                isOpPressed = true;
-                currentOP = '+';
-
+                lengthOfText = TextViewInputNumbers.getText().length();
+                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
+                    String screenContent = TextViewInputNumbers.getText().toString();
+                    val2Index = TextViewInputNumbers.length() + 1;
+                    val1 = Double.parseDouble(screenContent);
+                    TextViewInputNumbers.append("+");
+                    isOpPressed = true;
+                    currentOP = '+';
+                }
                 break;
 
             case R.id.subtraction:
-                screenContent = TextViewInputNumbers.getText().toString();
-                val2Index = TextViewInputNumbers.length() + 1;
-                val1 = Double.parseDouble(screenContent);
-                TextViewInputNumbers.append("-");
-                isOpPressed = true;
-                currentOP = '-';
+                lengthOfText = TextViewInputNumbers.getText().length();
+                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
+                    screenContent = TextViewInputNumbers.getText().toString();
+                    val2Index = TextViewInputNumbers.length() + 1;
+                    val1 = Double.parseDouble(screenContent);
+                    TextViewInputNumbers.append("-");
+                    isOpPressed = true;
+                    currentOP = '-';
+                }
                 break;
 
             case R.id.mul:
-                screenContent = TextViewInputNumbers.getText().toString();
-                val2Index = TextViewInputNumbers.length() + 1;
-                val1 = Double.parseDouble(screenContent);
-                TextViewInputNumbers.append("×");
-                isOpPressed = true;
-                currentOP = '×';
+                lengthOfText = TextViewInputNumbers.getText().length();
+                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
+                    screenContent = TextViewInputNumbers.getText().toString();
+                    val2Index = TextViewInputNumbers.length() + 1;
+                    val1 = Double.parseDouble(screenContent);
+                    TextViewInputNumbers.append("×");
+                    isOpPressed = true;
+                    currentOP = '×';
+                }
                 break;
 
             case R.id.division:
-                screenContent = TextViewInputNumbers.getText().toString();
-                val2Index = TextViewInputNumbers.length() + 1;
-                val1 = Double.parseDouble(screenContent);
-                TextViewInputNumbers.append("÷");
-                isOpPressed = true;
-                currentOP = '÷';
+                lengthOfText = TextViewInputNumbers.getText().length();
+                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
+                    screenContent = TextViewInputNumbers.getText().toString();
+                    val2Index = TextViewInputNumbers.length() + 1;
+                    val1 = Double.parseDouble(screenContent);
+                    TextViewInputNumbers.append("÷");
+                    isOpPressed = true;
+                    currentOP = '÷';
+                }
                 break;
 
             case R.id.equals:
-                if (isOpPressed) {
+                lengthOfText = TextViewInputNumbers.getText().length();
+                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                if (isOpPressed && defineLastCharacter(lastInput) == 0 ) {
                     if (currentOP == '+') {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
@@ -200,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         val1 -= val2;
 
                         TextViewInputNumbers.setText(String.valueOf(val1));
-                    } else if (currentOP == '×' ) {
+                    } else if (currentOP == '×') {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
                         double val2 = Double.parseDouble(val2String);
@@ -226,17 +245,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER) {
                     TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ".");
                     dotUsed = true;
-                } else if (dotUsed == true) {
-                }
+                } else if (dotUsed == true)
 
-                break;
+                    break;
 
             case R.id.percent:
-                TextViewInputNumbers.append("%");
+                /*TextViewInputNumbers.append("%");*/
                 break;
 
             case R.id.parenthesis:
-                int lengthOfText = TextViewInputNumbers.getText().length();
+                /*int lengthOfText = TextViewInputNumbers.getText().length();
 
                 if (lengthOfText == 0) {
                     TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
@@ -269,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "×(");
                     }
                 openParenthesis++;
-                }
+                }*/
 
                 break;
 
