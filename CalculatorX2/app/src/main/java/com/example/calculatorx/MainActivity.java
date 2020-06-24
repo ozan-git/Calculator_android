@@ -8,16 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private int openParenthesis = 0;
-    private boolean isOpen = false;
+
     private int lengthOfText;
     private String lastInput;
     private String screenContent;
     private boolean dotUsed = false;
     private final static int IS_NUMBER = 0;
     private final static int IS_OPERAND = 1;
-    private final static int IS_OPEN_PARENTHESIS = 2;
-    private final static int IS_CLOSE_PARENTHESIS = 3;
     private final static int IS_DOT = 4;
     private boolean isOpPressed = false;
     private double val1 = 0;
@@ -202,22 +199,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.equals:
+
                 lengthOfText = TextViewInputNumbers.getText().length();
                 lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                if (isOpPressed && defineLastCharacter(lastInput) == 0 ) {
+                if (isOpPressed && defineLastCharacter(lastInput) == 0) {
                     if (currentOP == '+') {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
                         double val2 = Double.parseDouble(val2String);
                         val2 += val1;
                         TextViewInputNumbers.setText(String.valueOf(val2));
-
                     } else if (currentOP == '-') {
                         screenContent = TextViewInputNumbers.getText().toString();
                         String val2String = screenContent.substring(val2Index, screenContent.length());
                         double val2 = Double.parseDouble(val2String);
                         val1 -= val2;
-
                         TextViewInputNumbers.setText(String.valueOf(val1));
                     } else if (currentOP == '×') {
                         screenContent = TextViewInputNumbers.getText().toString();
@@ -232,8 +228,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         val1 = val1 / val2;
                         TextViewInputNumbers.setText(String.valueOf(val1));
                     }
-                }
+                } else
+                    break;
                 break;
+
 
             case R.id.dot:
                 if (TextViewInputNumbers.getText().length() == 0) {
@@ -246,50 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ".");
                     dotUsed = true;
                 } else if (dotUsed == true)
-
                     break;
-
-            case R.id.percent:
-                /*TextViewInputNumbers.append("%");*/
-                break;
-
-            case R.id.parenthesis:
-                /*int lengthOfText = TextViewInputNumbers.getText().length();
-
-                if (lengthOfText == 0) {
-                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
-                    openParenthesis++;
-
-                } else if (openParenthesis > 0 && lengthOfText > 0) {
-                    String lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                    switch (defineLastCharacter(lastInput)){
-                        case IS_NUMBER:
-                        case IS_CLOSE_PARENTHESIS:
-                            TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ")");
-                            openParenthesis--;
-                            break;
-                        case IS_OPERAND:
-                        case IS_OPEN_PARENTHESIS:
-                            TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
-                            openParenthesis++;
-                            break;
-                    }
-                }else if (openParenthesis == 0 && lengthOfText >0){
-                    String lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                    if (defineLastCharacter(lastInput) == IS_OPERAND) {
-                        TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
-                    }else {
-                        screenContent = TextViewInputNumbers.getText().toString();
-                        val2Index = TextViewInputNumbers.length() + 1;
-                        val1 = Double.parseDouble(screenContent);
-                        isOpPressed = true;
-                        currentOP = '×';
-                        TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "×(");
-                    }
-                openParenthesis++;
-                }*/
-
-                break;
 
             case R.id.clean:
                 TextViewInputNumbers.setText("");
@@ -305,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
+
     }
 
     private int defineLastCharacter(String lastCharacter) {
@@ -316,12 +272,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if ((lastCharacter.equals("+") || lastCharacter.equals("-") || lastCharacter.equals("×") || lastCharacter.equals("÷") || lastCharacter.equals("%")))
             return IS_OPERAND;
-
-        if (lastCharacter.equals("("))
-            return IS_OPEN_PARENTHESIS;
-
-        if (lastCharacter.equals(")"))
-            return IS_CLOSE_PARENTHESIS;
 
         if (lastCharacter.equals("."))
             return IS_DOT;
