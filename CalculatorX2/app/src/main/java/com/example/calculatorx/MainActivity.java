@@ -8,16 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private int openParenthesis = 0;
-    private boolean isOpen = false;
+
     private int lengthOfText;
     private String lastInput;
     private String screenContent;
     private boolean dotUsed = false;
     private final static int IS_NUMBER = 0;
     private final static int IS_OPERAND = 1;
-    private final static int IS_OPEN_PARENTHESIS = 2;
-    private final static int IS_CLOSE_PARENTHESIS = 3;
     private final static int IS_DOT = 4;
     private boolean isOpPressed = false;
     private double val1 = 0;
@@ -25,31 +22,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private char currentOP;
     private int val2Index = 0;
 
-    Button button0;
-    Button button1;
-    Button button2;
-    Button button3;
-    Button button4;
-    Button button5;
-    Button button6;
-    Button button7;
-    Button button8;
-    Button button9;
-
-    Button buttonDivision;
-    Button buttonMultiplication;
-    Button buttonAddition;
-    Button buttonSubtraction;
-
-    Button buttonDot;
-    Button buttonEquals;
-    Button buttonPercent;
-    Button buttonClear;
-    Button buttonDelete;
-    Button buttonParenthesis;
-
-    TextView TextViewInputNumbers;
-    TextView TextViewResultNumbers;
+    Button button0, button1, button2, button3, button4, button5, button6, button7, button8, button9;
+    Button buttonDivision, buttonMultiplication, buttonAddition, buttonSubtraction;
+    Button buttonDot, buttonEquals, buttonPercent, buttonClear, buttonDelete, buttonParenthesis;
+    TextView TextViewInputNumbers, TextViewResultNumbers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initializeViewVariables();
         setOnClickListeners();
-
     }
 
     private void initializeViewVariables() {
@@ -86,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         TextViewInputNumbers = findViewById(R.id.inputCalScreen);
         TextViewResultNumbers = findViewById(R.id.resultCalScreen);
-
     }
 
     private void setOnClickListeners() {
@@ -116,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.btn0:
                 TextViewInputNumbers.append("0");
@@ -148,89 +121,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn9:
                 TextViewInputNumbers.append("9");
                 break;
-
             case R.id.addition:
-                lengthOfText = TextViewInputNumbers.getText().length();
-                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
-                    String screenContent = TextViewInputNumbers.getText().toString();
-                    val2Index = TextViewInputNumbers.length() + 1;
-                    val1 = Double.parseDouble(screenContent);
-                    TextViewInputNumbers.append("+");
-                    isOpPressed = true;
-                    currentOP = '+';
-                }
+                calculate('+');
                 break;
-
             case R.id.subtraction:
-                lengthOfText = TextViewInputNumbers.getText().length();
-                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
-                    screenContent = TextViewInputNumbers.getText().toString();
-                    val2Index = TextViewInputNumbers.length() + 1;
-                    val1 = Double.parseDouble(screenContent);
-                    TextViewInputNumbers.append("-");
-                    isOpPressed = true;
-                    currentOP = '-';
-                }
+                calculate('-');
                 break;
-
             case R.id.mul:
-                lengthOfText = TextViewInputNumbers.getText().length();
-                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
-                    screenContent = TextViewInputNumbers.getText().toString();
-                    val2Index = TextViewInputNumbers.length() + 1;
-                    val1 = Double.parseDouble(screenContent);
-                    TextViewInputNumbers.append("×");
-                    isOpPressed = true;
-                    currentOP = '×';
-                }
+                calculate('×');
                 break;
-
             case R.id.division:
-                lengthOfText = TextViewInputNumbers.getText().length();
-                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                if (isOpPressed == false || defineLastCharacter(lastInput) == 0) {
-                    screenContent = TextViewInputNumbers.getText().toString();
-                    val2Index = TextViewInputNumbers.length() + 1;
-                    val1 = Double.parseDouble(screenContent);
-                    TextViewInputNumbers.append("÷");
-                    isOpPressed = true;
-                    currentOP = '÷';
-                }
+                calculate('÷');
                 break;
 
             case R.id.equals:
-                lengthOfText = TextViewInputNumbers.getText().length();
-                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                if (isOpPressed && defineLastCharacter(lastInput) == 0 ) {
+                if (TextViewInputNumbers.getText().length() != 0 && defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER && isOpPressed) {
+                    lengthOfText = TextViewInputNumbers.getText().length();
+                    screenContent = TextViewInputNumbers.getText().toString();
+                    String val2String = screenContent.substring(val2Index, screenContent.length());
+                    double val2 = Double.parseDouble(val2String);
+
                     if (currentOP == '+') {
-                        screenContent = TextViewInputNumbers.getText().toString();
-                        String val2String = screenContent.substring(val2Index, screenContent.length());
-                        double val2 = Double.parseDouble(val2String);
-                        val2 += val1;
-                        TextViewInputNumbers.setText(String.valueOf(val2));
-
+                        val1 += val2;
+                        TextViewResultNumbers.setText(String.valueOf(val1));
+                        TextViewInputNumbers.setText("");
+                        isOpPressed = false;
+                        dotUsed = false;
                     } else if (currentOP == '-') {
-                        screenContent = TextViewInputNumbers.getText().toString();
-                        String val2String = screenContent.substring(val2Index, screenContent.length());
-                        double val2 = Double.parseDouble(val2String);
                         val1 -= val2;
-
-                        TextViewInputNumbers.setText(String.valueOf(val1));
+                        TextViewResultNumbers.setText(String.valueOf(val1));
+                        TextViewInputNumbers.setText("");
+                        isOpPressed = false;
+                        dotUsed = false;
                     } else if (currentOP == '×') {
-                        screenContent = TextViewInputNumbers.getText().toString();
-                        String val2String = screenContent.substring(val2Index, screenContent.length());
-                        double val2 = Double.parseDouble(val2String);
                         val1 = val1 * val2;
-                        TextViewInputNumbers.setText(String.valueOf(val1));
+                        TextViewResultNumbers.setText(String.valueOf(val1));
+                        TextViewInputNumbers.setText("");
+                        isOpPressed = false;
+                        dotUsed = false;
                     } else if (currentOP == '÷') {
-                        screenContent = TextViewInputNumbers.getText().toString();
-                        String val2String = screenContent.substring(val2Index, screenContent.length());
-                        double val2 = Double.parseDouble(val2String);
                         val1 = val1 / val2;
-                        TextViewInputNumbers.setText(String.valueOf(val1));
+                        TextViewResultNumbers.setText(String.valueOf(val1));
+                        TextViewInputNumbers.setText("");
+                        isOpPressed = false;
+                        dotUsed = false;
+
                     }
                 }
                 break;
@@ -242,53 +177,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_OPERAND) {
                     TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "0.");
                     dotUsed = true;
-                } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER) {
+                } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER && dotUsed == false) {
                     TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ".");
                     dotUsed = true;
-                } else if (dotUsed == true)
-
-                    break;
-
-            case R.id.percent:
-                /*TextViewInputNumbers.append("%");*/
-                break;
-
-            case R.id.parenthesis:
-                /*int lengthOfText = TextViewInputNumbers.getText().length();
-
-                if (lengthOfText == 0) {
-                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
-                    openParenthesis++;
-
-                } else if (openParenthesis > 0 && lengthOfText > 0) {
-                    String lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                    switch (defineLastCharacter(lastInput)){
-                        case IS_NUMBER:
-                        case IS_CLOSE_PARENTHESIS:
-                            TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ")");
-                            openParenthesis--;
-                            break;
-                        case IS_OPERAND:
-                        case IS_OPEN_PARENTHESIS:
-                            TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
-                            openParenthesis++;
-                            break;
-                    }
-                }else if (openParenthesis == 0 && lengthOfText >0){
-                    String lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
-                    if (defineLastCharacter(lastInput) == IS_OPERAND) {
-                        TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "(");
-                    }else {
-                        screenContent = TextViewInputNumbers.getText().toString();
-                        val2Index = TextViewInputNumbers.length() + 1;
-                        val1 = Double.parseDouble(screenContent);
-                        isOpPressed = true;
-                        currentOP = '×';
-                        TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "×(");
-                    }
-                openParenthesis++;
-                }*/
-
+                } else if (dotUsed == true) {
+                }
                 break;
 
             case R.id.clean:
@@ -299,11 +192,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.del:
                 String displayedElements = TextViewInputNumbers.getText().toString();
                 int length = displayedElements.length();
+                lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+                
                 if (length > 0) {
                     displayedElements = displayedElements.substring(0, length - 1);
                     TextViewInputNumbers.setText(displayedElements);
                 }
                 break;
+        }
+    }
+
+    private void calculate(char input) {
+        if (TextViewInputNumbers.getText().length() != 0 && isOpPressed == false) {
+            lengthOfText = TextViewInputNumbers.getText().length();
+            lastInput = TextViewInputNumbers.getText().charAt(lengthOfText - 1) + "";
+            screenContent = TextViewInputNumbers.getText().toString();
+            val2Index = TextViewInputNumbers.length() + 1;
+            val1 = Double.parseDouble(screenContent);
+            if (input == '÷') {
+                TextViewInputNumbers.append("÷");
+                currentOP = '÷';
+                isOpPressed = true;
+                dotUsed = false;
+            } else if (input == '×') {
+                TextViewInputNumbers.append("×");
+                currentOP = '×';
+                isOpPressed = true;
+                dotUsed = false;
+
+            } else if (input == '-') {
+                TextViewInputNumbers.append("-");
+                currentOP = '-';
+                isOpPressed = true;
+                dotUsed = false;
+
+            } else if (input == '+') {
+                TextViewInputNumbers.append("+");
+                currentOP = '+';
+                isOpPressed = true;
+                dotUsed = false;
+
+            }
         }
     }
 
@@ -313,19 +242,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return IS_NUMBER;
         } catch (NumberFormatException e) {
         }
-
-        if ((lastCharacter.equals("+") || lastCharacter.equals("-") || lastCharacter.equals("×") || lastCharacter.equals("÷") || lastCharacter.equals("%")))
+        if (lastCharacter.equals("+") || lastCharacter.equals("-") || lastCharacter.equals("×") || lastCharacter.equals("÷"))
             return IS_OPERAND;
-
-        if (lastCharacter.equals("("))
-            return IS_OPEN_PARENTHESIS;
-
-        if (lastCharacter.equals(")"))
-            return IS_CLOSE_PARENTHESIS;
 
         if (lastCharacter.equals("."))
             return IS_DOT;
-
         return -1;
     }
 }
