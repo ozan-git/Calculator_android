@@ -50,14 +50,16 @@
             android:layout_weight="0"
             android:text="@string/percent"
             android:textSize="30sp" />
+
         <Button
-            android:id="@+id/parenthesis"
+            android:id="@+id/sign_operator"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:text="@string/parenthesis"
+            android:layout_weight="1"
+            android:text="⁺∕₋"
             android:textSize="30sp" />
+
         <Button
             android:id="@+id/equals"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -110,7 +112,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/div1"
-            android:textSize="30sp"></Button>
+            android:textSize="30sp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

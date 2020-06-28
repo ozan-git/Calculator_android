@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
     private boolean dotUsed = false;
     private final static int IS_NUMBER = 0;
     private final static int IS_OPERAND = 1;
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button button0, button1, button2, button3, button4, button5, button6, button7, button8, button9;
     Button buttonDivision, buttonMultiplication, buttonAddition, buttonSubtraction;
-    Button buttonDot, buttonEquals, buttonPercent, buttonClear, buttonDelete, buttonParenthesis;
+    Button buttonDot, buttonEquals, buttonPercent, buttonClear, buttonDelete, buttonSign;
     TextView TextViewInputNumbers, TextViewResultNumbers;
 
     @Override
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonDelete = findViewById(R.id.del);
         buttonClear = findViewById(R.id.clean);
         buttonPercent = findViewById(R.id.percent);
-        buttonParenthesis = findViewById(R.id.parenthesis);
+        buttonSign = findViewById(R.id.sign_operator);
         buttonDot = findViewById(R.id.dot);
         buttonEquals = findViewById(R.id.equals);
 
@@ -82,110 +81,112 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonPercent.setOnClickListener(this);
         buttonClear.setOnClickListener(this);
         buttonDelete.setOnClickListener(this);
-        buttonParenthesis.setOnClickListener(this);
+        buttonSign.setOnClickListener(this);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn0:
-                TextViewInputNumbers.append("0");
-                break;
-            case R.id.btn1:
-                TextViewInputNumbers.append("1");
-                break;
-            case R.id.btn2:
-                TextViewInputNumbers.append("2");
-                break;
-            case R.id.btn3:
-                TextViewInputNumbers.append("3");
-                break;
-            case R.id.btn4:
-                TextViewInputNumbers.append("4");
-                break;
-            case R.id.btn5:
-                TextViewInputNumbers.append("5");
-                break;
-            case R.id.btn6:
-                TextViewInputNumbers.append("6");
-                break;
-            case R.id.btn7:
-                TextViewInputNumbers.append("7");
-                break;
-            case R.id.btn8:
-                TextViewInputNumbers.append("8");
-                break;
-            case R.id.btn9:
-                TextViewInputNumbers.append("9");
-                break;
-            case R.id.addition:
-                calculate('+');
-                break;
-            case R.id.subtraction:
-                calculate('-');
-                break;
-            case R.id.mul:
-                calculate('×');
-                break;
-            case R.id.division:
-                calculate('÷');
-                break;
-
-            case R.id.equals:
-                if (TextViewInputNumbers.getText().length() != 0 && defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER && isOpPressed) {
-                    String screenContent = TextViewInputNumbers.getText().toString();
-                    double val2 = Double.parseDouble(screenContent.substring(val2Index));
-                    isOpPressed = false;
-                    dotUsed = false;
-                    if (currentOP == '+') {
-                        val1 += val2;
-                    } else if (currentOP == '-') {
-                        val1 -= val2;
-                    } else if (currentOP == '×') {
-                        val1 *= val2;
-                    } else if (currentOP == '÷') {
-                        val1 /= val2;
-                    }
-                    TextViewResultNumbers.setText(String.valueOf(val1));
-                    TextViewInputNumbers.setText("");
+        int id = v.getId();
+        if (id == R.id.btn0) {
+            TextViewInputNumbers.append("0");
+        } else if (id == R.id.btn1) {
+            TextViewInputNumbers.append("1");
+        } else if (id == R.id.btn2) {
+            TextViewInputNumbers.append("2");
+        } else if (id == R.id.btn3) {
+            TextViewInputNumbers.append("3");
+        } else if (id == R.id.btn4) {
+            TextViewInputNumbers.append("4");
+        } else if (id == R.id.btn5) {
+            TextViewInputNumbers.append("5");
+        } else if (id == R.id.btn6) {
+            TextViewInputNumbers.append("6");
+        } else if (id == R.id.btn7) {
+            TextViewInputNumbers.append("7");
+        } else if (id == R.id.btn8) {
+            TextViewInputNumbers.append("8");
+        } else if (id == R.id.btn9) {
+            TextViewInputNumbers.append("9");
+        } else if (id == R.id.addition) {
+            calculate('+');
+        } else if (id == R.id.subtraction) {
+            calculate('-');
+        } else if (id == R.id.mul) {
+            calculate('×');
+        } else if (id == R.id.division) {
+            calculate('÷');
+        } else if (id == R.id.equals) {
+            if (TextViewInputNumbers.getText().length() != 0 && defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER && isOpPressed) {
+                String screenContent = TextViewInputNumbers.getText().toString();
+                double val2 = Double.parseDouble(screenContent.substring(val2Index));
+                isOpPressed = false;
+                dotUsed = false;
+                if (currentOP == '+') {
+                    val1 += val2;
+                } else if (currentOP == '-') {
+                    val1 -= val2;
+                } else if (currentOP == '×') {
+                    val1 *= val2;
+                } else if (currentOP == '÷') {
+                    val1 /= val2;
                 }
-                break;
-
-            case R.id.dot:
-                if (TextViewInputNumbers.getText().length() == 0) {
-                    TextViewInputNumbers.append("0.");
-                    dotUsed = true;
-                } else if (dotUsed) {
-                    break;
-                } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_OPERAND) {
-                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "0.");
-                    dotUsed = true;
-                } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER) {
-                    TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ".");
-                    dotUsed = true;
-                }
-                break;
-
-            case R.id.clean:
+                TextViewResultNumbers.setText(String.valueOf(val1));
                 TextViewInputNumbers.setText("");
-                TextViewResultNumbers.setText("");
-                break;
-
-            case R.id.del:
-                if (TextViewInputNumbers.getText().toString().length() > 0) {
-                    String displayedElements = TextViewInputNumbers.getText().toString();
-                    char cLastElement = displayedElements.charAt(displayedElements.length() - 1);
-                    displayedElements = displayedElements.substring(0, displayedElements.length() - 1);
-                    if (cLastElement == '.') {
-                        dotUsed = false;
-                    } else if (defineLastCharacter(String.valueOf(cLastElement)) == IS_OPERAND) {
-                        isOpPressed = false;
-                        dotUsed = !isObjectInteger(displayedElements);
-                    }
-                    TextViewInputNumbers.setText(displayedElements);
+            }
+        } else if (id == R.id.dot) {
+            if (TextViewInputNumbers.getText().length() == 0) {
+                TextViewInputNumbers.append("0.");
+                dotUsed = true;
+            } else if (dotUsed) {
+            } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_OPERAND) {
+                TextViewInputNumbers.setText(TextViewInputNumbers.getText() + "0.");
+                dotUsed = true;
+            } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1) + "") == IS_NUMBER) {
+                TextViewInputNumbers.setText(TextViewInputNumbers.getText() + ".");
+                dotUsed = true;
+            }
+        } else if (id == R.id.clean) {
+            TextViewInputNumbers.setText("");
+            TextViewResultNumbers.setText("");
+            isOpPressed = false;
+        } else if (id == R.id.del) {
+            if (TextViewInputNumbers.getText().toString().length() > 0) {
+                String displayedElements = TextViewInputNumbers.getText().toString();
+                char cLastElement = displayedElements.charAt(displayedElements.length() - 1);
+                displayedElements = displayedElements.substring(0, displayedElements.length() - 1);
+                if (cLastElement == '.') {
+                    dotUsed = false;
+                } else if (defineLastCharacter(String.valueOf(cLastElement)) == IS_OPERAND) {
+                    isOpPressed = false;
+                    dotUsed = !isObjectInteger(displayedElements);
                 }
-                break;
+                TextViewInputNumbers.setText(displayedElements);
+            }
+        } else if (id == R.id.sign_operator) {
+            boolean operationFlag = false;
+            String stringInput = TextViewInputNumbers.getText().toString();
+            StringBuilder sb = new StringBuilder();
+            sb.append(stringInput);
+            for (int i = (stringInput.length() - 1); i >= 0; i--) {
+                if (stringInput.charAt(i) == '+' || stringInput.charAt(i) == '-' || stringInput.charAt(i) == '×' || stringInput.charAt(i) == '÷') {
+                    operationFlag = true;
+                    if (stringInput.charAt(i) == '+') {
+                        sb.setCharAt(i, '-');
+                        currentOP = '-';
+                    } else if (stringInput.charAt(i) == '-') {
+                        sb.setCharAt(i, '+');
+                        currentOP = '+';
+                    } else if (stringInput.charAt(i) == '×' || stringInput.charAt(i) == '÷') {
+                        sb.insert(i + 1, '-');
+                    }
+                    break;
+                }
+            }
+            if (!operationFlag) {
+                sb.insert(0, '-');
+            }
+            TextViewInputNumbers.setText(sb.toString());
         }
     }
 
