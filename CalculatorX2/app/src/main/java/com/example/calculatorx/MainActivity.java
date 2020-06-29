@@ -10,7 +10,7 @@ import android.widget.TextView;
 import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity {
-
+    private Calculator mCalculator;
     private String fourOperator = "×÷-+";
     private boolean dotUsed = false;
     private final static int IS_NUMBER = 0;
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeViewVariables();
+        mCalculator = new Calculator();
     }
 
     private void initializeViewVariables() {
@@ -142,32 +143,33 @@ public class MainActivity extends AppCompatActivity {
             double val2 = Double.parseDouble(screenContent.substring(val2Index));
             isOpPressed = false;
             dotUsed = false;
+            String result = null;
             if (currentOP == '+') {
-                val1 += val2;
+                result = String.valueOf(mCalculator.add(val1, val2));
             } else if (currentOP == '-') {
-                val1 -= val2;
+                result = String.valueOf(mCalculator.sub(val1, val2));
             } else if (currentOP == '×') {
-                val1 *= val2;
+                result = String.valueOf(mCalculator.mul(val1, val2));
             } else if (currentOP == '÷') {
-                val1 /= val2;
+                result = String.valueOf(mCalculator.div(val1, val2));
             }
-            TextViewResultNumbers.setText(valueOf(val1));
+            TextViewResultNumbers.setText(valueOf(result));
             TextViewInputNumbers.setText("");
         }
     }
 
     private int defineLastCharacter() {
-            char lastCharacter = TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1);
-            try {
-                Integer.parseInt(valueOf(lastCharacter));
-                if (!TextViewInputNumbers.getText().toString().isEmpty())
+        char lastCharacter = TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1);
+        try {
+            Integer.parseInt(valueOf(lastCharacter));
+            if (!TextViewInputNumbers.getText().toString().isEmpty())
                 return IS_NUMBER;
-            } catch (NumberFormatException ignored) {
-            }
-            if (fourOperator.contains(valueOf(lastCharacter)))
-                return IS_OPERAND;
-            if (lastCharacter == '.')
-                return IS_DOT;
+        } catch (NumberFormatException ignored) {
+        }
+        if (fourOperator.contains(valueOf(lastCharacter)))
+            return IS_OPERAND;
+        if (lastCharacter == '.')
+            return IS_DOT;
         return -1;
     }
 
