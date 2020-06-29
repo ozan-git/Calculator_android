@@ -7,7 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import static java.lang.String.valueOf;
+
 public class MainActivity extends AppCompatActivity {
+
+    private String fourOperator = "×÷-+";
     private boolean dotUsed = false;
     private final static int IS_NUMBER = 0;
     private final static int IS_OPERAND = 1;
@@ -53,8 +57,10 @@ public class MainActivity extends AppCompatActivity {
         TextViewResultNumbers = findViewById(R.id.resultCalScreen);
     }
 
-    public void onClick(View v) {
-        int id = v.getId();
+    //OnClick method called when the Buttons are pressed.
+    public void onClickNumbers(View view) {
+        int id = view.getId();
+        //numbers
         if (id == R.id.btn0) {
             TextViewInputNumbers.append("0");
         } else if (id == R.id.btn1) {
@@ -75,7 +81,13 @@ public class MainActivity extends AppCompatActivity {
             TextViewInputNumbers.append("8");
         } else if (id == R.id.btn9) {
             TextViewInputNumbers.append("9");
-        } else if (id == R.id.addition) {
+        }
+    }
+
+    public void onClickOperator(View view) {
+        int id = view.getId();
+        //operators
+        if (id == R.id.addition) {
             calculate('+');
         } else if (id == R.id.subtraction) {
             calculate('-');
@@ -98,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isObjectInteger(Object TextViewInputNumbers) {
         try {
-            Integer.parseInt(String.valueOf(TextViewInputNumbers));
+            Integer.parseInt(valueOf(TextViewInputNumbers));
             return true;
         } catch (NumberFormatException ex) {
             return false;
@@ -125,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void equalsMethod() {
-        if (TextViewInputNumbers.getText().length() != 0 && defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1)) == IS_NUMBER && isOpPressed) {
+        if (TextViewInputNumbers.getText().length() != 0 && defineLastCharacter() == IS_NUMBER && isOpPressed) {
             String screenContent = TextViewInputNumbers.getText().toString();
             double val2 = Double.parseDouble(screenContent.substring(val2Index));
             isOpPressed = false;
@@ -139,24 +151,23 @@ public class MainActivity extends AppCompatActivity {
             } else if (currentOP == '÷') {
                 val1 /= val2;
             }
-            TextViewResultNumbers.setText(String.valueOf(val1));
+            TextViewResultNumbers.setText(valueOf(val1));
             TextViewInputNumbers.setText("");
         }
     }
 
-    private int defineLastCharacter(Character lastCharacter) {
-        if (!TextViewInputNumbers.getText().toString().isEmpty()) {
+    private int defineLastCharacter() {
+            char lastCharacter = TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1);
             try {
-                Integer.parseInt(String.valueOf(lastCharacter));
+                Integer.parseInt(valueOf(lastCharacter));
+                if (!TextViewInputNumbers.getText().toString().isEmpty())
                 return IS_NUMBER;
             } catch (NumberFormatException ignored) {
             }
-            char[] signCharSequence = new char[]{'+', '-', '×', '÷'};
-            if (lastCharacter.equals(signCharSequence[0]) || lastCharacter.equals(signCharSequence[1]) || lastCharacter.equals(signCharSequence[2]) || lastCharacter.equals(signCharSequence[3]))
+            if (fourOperator.contains(valueOf(lastCharacter)))
                 return IS_OPERAND;
-            if (lastCharacter.equals('.'))
+            if (lastCharacter == '.')
                 return IS_DOT;
-        }
         return -1;
     }
 
@@ -166,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         sb.append(stringInput);
         for (int i = (stringInput.length() - 1); i >= 0; i--) {
-            if (stringInput.charAt(i) == '+' || stringInput.charAt(i) == '-' || stringInput.charAt(i) == '×' || stringInput.charAt(i) == '÷') {
+            if (fourOperator.contains(String.valueOf(stringInput.charAt(i)))) {
                 operationFlag = true;
                 if (stringInput.charAt(i) == '+') {
                     sb.setCharAt(i, '-');
@@ -189,11 +200,10 @@ public class MainActivity extends AppCompatActivity {
     private void singleDeleteMethod() {
         if (TextViewInputNumbers.getText().toString().length() > 0) {
             String displayedElements = TextViewInputNumbers.getText().toString();
-            char cLastElement = displayedElements.charAt(displayedElements.length() - 1);
             displayedElements = displayedElements.substring(0, displayedElements.length() - 1);
-            if (cLastElement == '.') {
+            if (defineLastCharacter() == IS_DOT) {
                 dotUsed = false;
-            } else if (defineLastCharacter(cLastElement) == IS_OPERAND) {
+            } else if (defineLastCharacter() == IS_OPERAND) {
                 isOpPressed = false;
                 dotUsed = !isObjectInteger(displayedElements);
             }
@@ -212,10 +222,10 @@ public class MainActivity extends AppCompatActivity {
         if (TextViewInputNumbers.getText().length() == 0 && !dotUsed) {
             TextViewInputNumbers.append("0.");
             dotUsed = true;
-        } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1)) == IS_OPERAND && !dotUsed) {
+        } else if (defineLastCharacter() == IS_OPERAND && !dotUsed) {
             TextViewInputNumbers.setText(String.format("%s0.", TextViewInputNumbers.getText()));
             dotUsed = true;
-        } else if (defineLastCharacter(TextViewInputNumbers.getText().charAt(TextViewInputNumbers.getText().length() - 1)) == IS_NUMBER && !dotUsed) {
+        } else if (defineLastCharacter() == IS_NUMBER && !dotUsed) {
             TextViewInputNumbers.setText(String.format("%s.", TextViewInputNumbers.getText()));
             dotUsed = true;
         }

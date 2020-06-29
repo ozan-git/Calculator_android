@@ -23,4 +23,5 @@
     <string name="percent">%</string>
     <string name="parenthesis">( )</string>
     <string name="subtraction">-</string>
+    <string name="plus_minus_sign">⁺∕₋</string>
 </resources>
