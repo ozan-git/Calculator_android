@@ -24,4 +24,6 @@
     <string name="parenthesis">( )</string>
     <string name="subtraction">-</string>
     <string name="plus_minus_sign">⁺∕₋</string>
+    <string name="local_service_connected">localServiceConnected</string>
+    <string name="local_service_disconnected">LocalServiceDisconnect</string>
 </resources>

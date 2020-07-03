@@ -41,7 +41,8 @@
             android:background="@color/colorPrimaryDark"
             android:text="@string/C"
             android:onClick="onClickOperator"
-            android:textSize="30sp"/>
+            android:textSize="30sp"
+            tools:ignore="NestedWeights" />
 
         <Button
             android:id="@+id/percent"
