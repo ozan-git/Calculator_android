@@ -18,14 +18,13 @@ public class MainActivity extends Activity {
     boolean mBound = false;
 
     private String fourOperator = "×÷-+";
-    public boolean dotUsed = false;
-    public static final int IS_NUMBER = 0;
-    public final static int IS_OPERAND = 1;
-    public final static int IS_DOT = 4;
-    public boolean isOpPressed = false;
-    public double val1 = 0;
+    private boolean dotUsed = false;
+    private static final int IS_NUMBER = 0;
+    private final static int IS_OPERAND = 1;
+    private final static int IS_DOT = 4;
+    private boolean isOpPressed = false;
     public char currentOP;
-    public int val2Index = 0;
+    private int val2Index = 0;
     Button button0, button1, button2, button3, button4, button5, button6, button7, button8, button9;
     Button buttonDivision, buttonMultiplication, buttonAddition, buttonSubtraction;
     Button buttonDot, buttonEquals, buttonPercent, buttonClear, buttonDelete, buttonSign;
@@ -55,9 +54,8 @@ public class MainActivity extends Activity {
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            /* LocalService’e bağlıyız, Ibinder’I yayınladık ve LocalService örneğini aldık.*/
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            /* LocalCalculatorService’e bağlıyız, Ibinder’I yayınladık ve LocalService örneğini aldık.*/
             LocalCalculatorService.LocalBinder binder = (LocalCalculatorService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
@@ -126,7 +124,6 @@ public class MainActivity extends Activity {
         //operators
         if (id == R.id.addition) {
             calculate('+');
-
         } else if (id == R.id.subtraction) {
             calculate('-');
         } else if (id == R.id.mul) {
@@ -149,21 +146,25 @@ public class MainActivity extends Activity {
 
     private void calculate(char input) {
         if (TextViewInputNumbers.getText().length() != 0 && !isOpPressed) {
-            val2Index = TextViewInputNumbers.length() + 1;
+            val2Index = TextViewInputNumbers.getText().toString().length() + 1;
+            double val1;
             val1 = Double.parseDouble(TextViewInputNumbers.getText().toString());
-            mService.setVal1(val1);
+            if (mBound) {
+                mService.setVal1(val1);
+            }
             TextViewInputNumbers.append(valueOf(input));
             currentOP = input;
-            mService.setCurrentOP(input);
+            if (mBound) {
+                mService.setCurrentOP(input);
+            }
             isOpPressed = true;
             dotUsed = false;
-
         }
     }
 
-    public boolean isObjectInteger(Object TextViewInputNumbers) {
+    public boolean isStringInteger(String displayedElements) {
         try {
-            Integer.parseInt(valueOf(TextViewInputNumbers));
+            Integer.parseInt(displayedElements);
             return true;
         } catch (NumberFormatException ex) {
             return false;
@@ -176,14 +177,16 @@ public class MainActivity extends Activity {
             isOpPressed = false;
             dotUsed = false;
 
-            String screenContent = TextViewInputNumbers.toString();
+            String screenContent = TextViewInputNumbers.getText().toString();
             double val2 = Double.parseDouble(screenContent.substring(val2Index));
-            mService.setVal2(val2);
-            mService.equalsMethod();
-            String num = valueOf(mService.getVal1());
+            String num = null;
+            if (mBound) {
+                mService.setVal2(val2);
+                mService.equalsMethod();
+                num = valueOf(mService.getVal1());
+            }
             TextViewResultNumbers.setText(num);
             TextViewInputNumbers.setText("");
-
         }
     }
 
@@ -236,7 +239,7 @@ public class MainActivity extends Activity {
                 dotUsed = false;
             } else if (defineLastCharacter() == IS_OPERAND) {
                 isOpPressed = false;
-                dotUsed = !isObjectInteger(displayedElements);
+                dotUsed = !isStringInteger(displayedElements);
             }
             TextViewInputNumbers.setText(displayedElements);
         }
