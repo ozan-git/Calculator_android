@@ -6,21 +6,12 @@ import android.os.Binder;
 import android.os.IBinder;
 
 public class LocalCalculatorService extends Service {
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-    }
-    MainActivity main;
-    // Clientlere verilen Binder(bağlayıcı)
     private final IBinder binder = new LocalBinder();
 
-    /**
-     * İstemci Binderi için kullanılan sınıf.Bu servisin
-     * istemcileriyle her zaman aynı süreçte çalıştığını bildiğimiz
-     * için IPC ile uğraşmak zorunda değiliz.
-     */
+    private char currentOP;
+    private double val2 = 0;
+    private double val1 = 0;
+
     public class LocalBinder extends Binder {
         LocalCalculatorService getService() {
             // İstemcilerin genel yöntemleri çağırabilmeleri için bu
@@ -30,33 +21,67 @@ public class LocalCalculatorService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        val1 = 0;
+        val2 = 0;
+        currentOP = ' ';
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         return binder;
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        stopSelf(); // When app is removed from recently used app list, we stop the service.
+    }
+
+    /**
+     * İstemci Binderi için kullanılan sınıf.Bu servisin
+     * istemcileriyle her zaman aynı süreçte çalıştığını bildiğimiz
+     * için IPC ile uğraşmak zorunda değiliz.
+     */
+    public char getCharCurrentOperator() {
+        return currentOP;
+    }
+
+    public double getVal2() {
+        return val2;
+    }
+
+    public double getVal1() {
+        return val1;
+    }
+
+    public void setCurrentOP(char currentOP){
+        this.currentOP = currentOP;
+    }
+
+    public void setVal2(double val2){
+        this.val2 = val2;
+    }
+    public void setVal1(double val1){
+        this.val1 = val1;
+    }
     /**
      * Clientler için method
      */
-    public double equalsMethod() {
+    public void equalsMethod() {
 
-            main.isOpPressed = false;
-            main.dotUsed = false;
-
-            double result = 0;
-            String screenContent = main.TextViewInputNumbers.getText().toString();
-            double val2 = Double.parseDouble(screenContent.substring(main.val2Index));
-            if (main.currentOP == '+') {
-                result = main.val1 + val2;
-            } else if (main.currentOP == '-') {
-                result = main.val1 - val2;
-            } else if (main.currentOP == '×') {
-                result = main.val1 * val2;
-            } else if (main.currentOP == '÷') {
-                result = main.val1 / val2;
-            }
-            return result;
+        if (currentOP == '+') {
+            val1 = val1 + val2;
+        } else if (currentOP == '-') {
+            val1 = val1 - val2;
+        } else if (currentOP == '×') {
+            val1 = val1 * val2;
+        } else if (currentOP == '÷') {
+            val1 = val1 / val2;
         }
     }
+}
 
 
 

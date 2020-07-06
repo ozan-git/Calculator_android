@@ -10,17 +10,16 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static java.lang.String.valueOf;
 
 public class MainActivity extends Activity {
-    public static final int IS_NUMBER = 1;
     LocalCalculatorService mService;
     boolean mBound = false;
 
     private String fourOperator = "×÷-+";
     public boolean dotUsed = false;
+    public static final int IS_NUMBER = 0;
     public final static int IS_OPERAND = 1;
     public final static int IS_DOT = 4;
     public boolean isOpPressed = false;
@@ -54,24 +53,6 @@ public class MainActivity extends Activity {
         mBound = false;
     }
 
-    /**
-     * Bir butona tıklandığında çağırılır (layout dosyasındaki buton
-     * android:onClick özniteliğiyle bu yönteme eklenir.)
-     public void onClickOperator(View v) {
-     if (mBound) {
-     // LocalService’ten bir yöntem çağırırız.
-     //Ancak, bu çağrı asılabilecek bir şeyse, etkinlik
-     //performansının yavaşlamasını önlemek amacıyla bu istek
-     //ayrı bir iş parçacığında gerçekleşmelidir.
-     int num = mService.getRandomNumber();
-     Toast.makeText(this, "number: " + num, Toast.LENGTH_SHORT).show();
-     }
-     }*/
-
-    /**
-     * bindService() öğesine iletilen servis bağlama için geri
-     * çağrıları tanımlar.
-     */
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
@@ -145,6 +126,7 @@ public class MainActivity extends Activity {
         //operators
         if (id == R.id.addition) {
             calculate('+');
+
         } else if (id == R.id.subtraction) {
             calculate('-');
         } else if (id == R.id.mul) {
@@ -161,6 +143,21 @@ public class MainActivity extends Activity {
             singleDeleteMethod();
         } else if (id == R.id.sign_operator) {
             signMethod();
+
+        }
+    }
+
+    private void calculate(char input) {
+        if (TextViewInputNumbers.getText().length() != 0 && !isOpPressed) {
+            val2Index = TextViewInputNumbers.length() + 1;
+            val1 = Double.parseDouble(TextViewInputNumbers.getText().toString());
+            mService.setVal1(val1);
+            TextViewInputNumbers.append(valueOf(input));
+            currentOP = input;
+            mService.setCurrentOP(input);
+            isOpPressed = true;
+            dotUsed = false;
+
         }
     }
 
@@ -173,35 +170,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void calculate(char input) {
-        if (TextViewInputNumbers.getText().length() != 0 && !isOpPressed) {
-            val2Index = TextViewInputNumbers.length() + 1;
-            val1 = Double.parseDouble(TextViewInputNumbers.getText().toString());
-            if (input == '÷') {
-                TextViewInputNumbers.append("÷");
-            } else if (input == '×') {
-                TextViewInputNumbers.append("×");
-            } else if (input == '-') {
-                TextViewInputNumbers.append("-");
-            } else if (input == '+') {
-                TextViewInputNumbers.append("+");
-            }
-            currentOP = input;
-            isOpPressed = true;
-            dotUsed = false;
-        }
-    }
-
     private void equalsMethod() {
         if (TextViewInputNumbers.getText().length() != 0 && defineLastCharacter() == IS_NUMBER && isOpPressed) {
 
             isOpPressed = false;
             dotUsed = false;
 
-
-                String num = valueOf(mService.equalsMethod());
-                TextViewResultNumbers.setText(num);
-                TextViewInputNumbers.setText("");
+            String screenContent = TextViewInputNumbers.toString();
+            double val2 = Double.parseDouble(screenContent.substring(val2Index));
+            mService.setVal2(val2);
+            mService.equalsMethod();
+            String num = valueOf(mService.getVal1());
+            TextViewResultNumbers.setText(num);
+            TextViewInputNumbers.setText("");
 
         }
     }
