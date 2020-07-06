@@ -35,13 +35,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeViewVariables();
+        startService();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // LocalCalculatorService’e bağlan
+    private void startService() {
         Intent intent = new Intent(this, LocalCalculatorService.class);
+        startService(intent);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
@@ -55,12 +54,11 @@ public class MainActivity extends Activity {
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            /* LocalCalculatorService’e bağlıyız, Ibinder’I yayınladık ve LocalService örneğini aldık.*/
+            /* LocalCalculatorService’e bağlıyız, Ibinder’i yayınladık ve LocalCalculatorService örneğini aldık.*/
             LocalCalculatorService.LocalBinder binder = (LocalCalculatorService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
         }
-
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;

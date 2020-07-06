@@ -50,7 +50,7 @@ public class LocalCalculatorService extends Service {
     }
 
     /**
-     * Clientler için method
+     * Method for Clients
      */
     public void equalsMethod() {
 
